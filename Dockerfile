@@ -30,12 +30,9 @@ RUN chmod 644 /opt/jenkins.war
 
 # Fix docker-client issue with libjffi for arm: https://github.com/spotify/docker-client/issues/477
 RUN apt-get install -y texinfo build-essential ant
-RUN cd /tmp
-RUN git clone https://github.com/jnr/jffi.git
-RUN cd jffi
-RUN ant jar
-RUN cd build/jni
-RUN cp libjffi-1.2.so /usr/lib
+RUN git clone https://github.com/jnr/jffi.git /tmp/jffi
+RUN ant jar -f /tmp/jffi/build.xml
+RUN cp /tmp/jffi/build/jni/libjffi-1.2.so /usr/lib
 RUN chmod 644 /usr/lib/libjffi-1.2.so
 
 VOLUME ${JENKINS_HOME}
