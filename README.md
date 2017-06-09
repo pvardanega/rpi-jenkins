@@ -1,4 +1,12 @@
-Runs Jenkins on a raspberry pi
+Runs Jenkins on a raspberry pi.
+
+Installed:
+
+- git
+- oracle jdk8
+- maven 3
+- docker + compatibility for docker-maven-plugin from spotify
+- Jenkins
 
 `docker run -p 8080:8080 -p 50000:50000 pvardanega/rpi-jenkins`
 
