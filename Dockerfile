@@ -7,19 +7,10 @@ ENV JENKINS_HOME /var/jenkins_home
 ENV JENKINS_SLAVE_AGENT_PORT 50000
 
 RUN apt-get -y update \
-  && apt-get install -y --no-install-recommends curl git maven texinfo build-essential ant
+  && apt-get install -y --no-install-recommends curl git maven
 
 # Install docker
 RUN curl -sSL https://get.docker.com | sh
-
-# and fix docker-client issue with libjffi for arm: https://github.com/spotify/docker-client/issues/477
-RUN cd /tmp
-RUN git clone https://github.com/jnr/jffi.git
-RUN cd jffi
-RUN ant jar
-RUN cd build/jni
-RUN cp libjffi-1.2.so /usr/lib
-RUN chmod 644 /usr/lib/libjffi-1.2.so
 
 # The special trick here is to download and install the Oracle Java 8 installer from Launchpad.net
 RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee /etc/apt/sources.list.d/webupd8team-java.list
@@ -36,6 +27,16 @@ RUN adduser --disabled-login --no-create-home --gecos "" --shell /bin/sh jenkins
 RUN mkdir ${JENKINS_HOME}
 RUN chown -R jenkins:jenkins ${JENKINS_HOME}
 RUN chmod 644 /opt/jenkins.war
+
+# Fix docker-client issue with libjffi for arm: https://github.com/spotify/docker-client/issues/477
+RUN apt-get install -y texinfo build-essential ant
+RUN cd /tmp
+RUN git clone https://github.com/jnr/jffi.git
+RUN cd jffi
+RUN ant jar
+RUN cd build/jni
+RUN cp libjffi-1.2.so /usr/lib
+RUN chmod 644 /usr/lib/libjffi-1.2.so
 
 VOLUME ${JENKINS_HOME}
 
